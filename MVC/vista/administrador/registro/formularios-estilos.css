@@ -1,0 +1,41 @@
+header{
+	height: 60px;
+	color: #fff;
+	text-align: center;
+	background: rgba(0,0,0,0.9);
+
+}
+body{
+	
+	-webkit-background-size:cover;
+	background-size: 100% 100%;
+	background-attachment: fixed;
+	margin: auto;
+}
+.cuadro{
+	background-color: lightgray;
+	width: 70%;
+	margin: auto;
+	padding: 20px;
+	border-radius: 10px;
+	background: rgba(0,0,0,0.7);
+}
+.consulta{
+	width: 100%;
+	margin: auto;
+	padding: 20px;
+	border-radius: 10px;
+	background: rgba(000,000,000,0.8);
+	color: #fff;
+	
+}
+.no-consulta{
+	width: 70%;
+	margin: auto;
+	padding: 20px;
+	border-radius: 10px;
+	background: rgba(000,000,000,0.9);
+	color: #fff;
+	text-align: center;
+	
+}
