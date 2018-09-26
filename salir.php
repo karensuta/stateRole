@@ -1,0 +1,19 @@
+<?php 
+session_start();
+$_SESSION["documento"]=0;
+$_SESSION["login"]=0;
+$_SESSION["cont"]=0;
+$_SESSION["habilitado"]=0;
+$_SESSION["registrado"]=0;
+$_SESSION["registroA"]=0;
+$_SESSION["repetir"]=0;
+$_SESSION["programa"]=0;
+$_SESSION["ficha"]=0;
+$_SESSION["usuario"]=0;
+$_SESSION["repetirH"]=0;
+$_SESSION["actualizar"]=0;
+$_SESSION["aprendiz"]=0;
+$_SESSION["eliminar"]=0;
+$_SESSION["novedad"]=0;
+header('location: index.php');
+?>
