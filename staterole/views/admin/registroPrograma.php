@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,12 +33,17 @@ if ($_SESSION["programa"]==1) {
             </div>";
   $_SESSION["programa"]=0;
 }
+//este programa de formacion ys se encuentra registrado
+if ($_SESSION["programa"]==3) {
+  echo"<div class='alert alert-danger text-center'>
+      <strong>Aviso!</strong> Este programa de formación ya esta registrado.
+            </div>";
+  $_SESSION["programa"]=0;
+}
 ?>
 
-
-
 <div class="cuadro" style=" padding:100px;">
-  <div class="container" style="background-color: #fff;">
+  <div class="container table-responsive" style="background-color: #fff;">
     
     <table width="100%">
       <form action="../../negocio/registro/datosPrograma.php" method="post">
@@ -46,7 +51,7 @@ if ($_SESSION["programa"]==1) {
           <td>Nombre para el Programa de Formación:</td>
         </tr>
         <tr>
-          <td><input autocomplete="off" type="tex" name="programa" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]+{1,80}" title="Sólo puede ingresar letras" style="width: 100%;" required></td>
+          <td><input autocomplete="off" type="tex" name="programa" pattern="[A-Z ]+" minlength="3" maxlength="80" title="Sólo puede ingresar mayúsculas" style="width: 100%;" required></td>
         </tr>
     </table>
     <table width="100%">

@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +27,7 @@ include '../../elementos/admin/nav2.php';
 </header>
 
 
-  <div class="container" style="background-color: #fff; padding: 100px; ">
+  <div class="container table-responsive" style="background-color: #fff; padding: 100px; ">
     
     <table width="100%" border="0">
       <form action="../../negocio/actualizar/datosUsuario.php" method="post">
@@ -36,43 +36,79 @@ include '../../elementos/admin/nav2.php';
       require_once '../../controller/adminController.php';
 
       $usuario = new Administrador();
-      $us = $usuario->consultarUsuario($_POST["doc"]);
+      $us = $usuario->consultarUsuario($_POST["doc"],$_POST["rolC"]);
 
       foreach ($us as $x) {
         echo "<table width=100%>
         <tr>
           <td>Primer Nombre:</td>
           <td>".$x["p_nombre"]."</td>
-          <td><input type='text' class=form-control name='n_p_nombre' value='$x[p_nombre]' required></td>
+          <td align=center>";
+
+          if ($x["id_rol"] == 5) {
+            echo $x["p_nombre"];
+          }else{
+            echo "<input type='text' class=form-control name='n_p_nombre' value='$x[p_nombre]' pattern='[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}' title='Sólo puede ingresar letras' required>";
+          }
+
+          echo "</td>
         </tr>
         <tr>
           <td>Segundo Nombre:</td>
           <td>".$x["s_nombre"]."</td>
-          <td><input type='text' class=form-control name='n_s_nombre' value='$x[s_nombre]' required></td>
+          <td align=center>";
+
+          if ($x["id_rol"] == 5) {
+            echo $x["s_nombre"];
+          }else{
+            echo "<input type='text' class=form-control name='n_s_nombre' value='$x[s_nombre]' pattern='[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}' title='Sólo puede ingresar letras'>";
+          }
+
+          echo "</td>
         </tr>
         <tr>
           <td>Primer Apellido:</td>
           <td>".$x["p_apellido"]."</td>
-          <td><input type='text' class=form-control name='n_p_apellido' value='$x[p_apellido]' required></td>
+          <td align=center>";
+
+          if ($x["id_rol"] == 5) {
+            echo $x["p_apellido"];
+          }else{
+            echo "<input type='text' class=form-control name='n_p_apellido' value='$x[p_apellido]' pattern='[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}' title='Sólo puede ingresar letras' required>";
+          }
+
+          echo "</td>
         </tr>
         <tr>
           <td>Segundo Apellido:</td>
           <td>".$x["s_apellido"]."</td>
-          <td><input type='text' class=form-control name='n_s_apellido' value='$x[s_apellido]' required></td>
+          <td align=center>";
+
+          if ($x["id_rol"] == 5) {
+            echo $x["s_apellido"];
+          }else{
+            echo "<input type='text' class=form-control name='n_s_apellido' value='$x[s_apellido]' pattern='[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}' title='Sólo puede ingresar letras'>";
+          }
+
+          echo "</td>
         </tr>
         <tr>
           <td>Tipo documento:</td>
           <td>".$x["tipo_documento"]."</td>
-          <td>
-            <select class=form-control name='n_id_tipo_documento'>
-              <option value='$x[id_tipo_documento]'>$x[tipo_documento]</option>";
-              
-              require_once '../../model/conexion.php';
-              $cxn=Conexion::conectar();
-              $sec=$cxn->query("SELECT * FROM tipo_documento");
-              while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
-                echo "<option value='$row[id_tipo_documento]'>$row[tipo_documento]</option>";
-              }
+          <td align=center>";
+            if($x["id_rol"]==5){
+              echo $x["tipo_documento"];
+            }else{
+            echo "<select class=form-control name='n_id_tipo_documento'>
+                    <option value='$x[id_tipo_documento]'>$x[tipo_documento]</option>";
+                    
+                    require_once '../../model/conexion.php';
+                    $cxn=Conexion::conectar();
+                    $sec=$cxn->query("SELECT * FROM tipo_documento");
+                    while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
+                      echo "<option value='$row[id_tipo_documento]'>$row[tipo_documento]</option>";
+                    }
+            }
 
       echo "</select>
           </td>
@@ -80,31 +116,117 @@ include '../../elementos/admin/nav2.php';
         <tr>
           <td>Documento:</td>
           <td>".$x["documento"]."</td>
-          <td><input type='text' class=form-control name='n_docuemnto' value='$x[documento]'' required></td>
-              <input type='hidden' class=form-control name='doc' value='$x[documento]'' required>
+          <td align=center>".$x["documento"]."<input type='hidden' class=form-control name='doc' value='$x[documento]'></td>
         </tr>
         <tr>
           <td>Correo:</td>
           <td>".$x["correo"]."</td>
-          <td><input type='text' class=form-control name='n_correo' value='$x[correo]' required></td>
+          <td align=center>";
+
+          if ($x["id_rol"] == 5) {
+            echo $x["correo"];
+          }else{
+            echo "<input type='text' class=form-control name='n_correo' value='$x[correo]' required pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' title='ejemplo@example.com'>";
+          }
+
+          echo "</td>
         </tr>
         <tr>
           <td>Rol:</td>
-          <td>".$x["rol"]."</td>
-          <td>
-            <select class=form-control name='n_id_rol'>
-              <option value='$x[id_rol]'>$x[rol]</option>";
-              
-              require_once '../../model/conexion.php';
-              $cxn=Conexion::conectar();
-              $sec=$cxn->query("SELECT * FROM rol");
-              while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
-                echo "<option value='$row[id_rol]'>$row[rol]</option>";
+          <td>".$x["rol"]."<input type='hidden' class=form-control name='rolC' value='$x[id_rol]'></td>
+          <td align=center>";
+
+              if ($x["id_rol"] == 1 || $x["id_rol"] == 3 || $x["id_rol"] == 5 ) {
+                echo $x["rol"],"<input type='hidden' class=form-control name='n_id_rol' value='$x[id_rol]' required>";
+
+              }else{
+                echo "
+                <select class=form-control name='n_id_rol'>
+                  <option value='$x[id_rol]'>$x[rol]</option>";
+
+                  require_once '../../model/conexion.php';
+                  $cxn=Conexion::conectar();
+                  $sec=$cxn->query("SELECT * FROM rol");
+                  while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
+                    echo "<option value='$row[id_rol]'>$row[rol]</option>";
+                  }
               }
 
       echo "</select>
-        </tr>
-        </table>";
+        </tr>";
+
+        if ($x["id_rol"] == 3) {
+          echo "
+          <tr>
+            <td>Sede:</td>
+            <td>".$x["sede"]."</td>
+            <td>
+              <select class=form-control name='n_id_sede'>
+              <option value='$x[id_sede]'>$x[sede]</option>";
+
+              require_once '../../model/conexion.php';
+              $cxn=Conexion::conectar();
+              $sec=$cxn->query("SELECT * FROM sede");
+              while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
+                echo "<option value='$row[id_sede]'>$row[sede]</option>";
+              }
+
+      echo "</select>
+        </td>
+          </tr>
+          <tr>
+            <td>Ficha y Programa de Formación</td>
+            <td>".$x["ficha"]." - ".$x["programa"]."</td>
+            <td>
+              <select class=form-control name='n_id_ficha'>
+              <option value='$x[id_ficha]'>$x[ficha] - $x[programa]</option>";
+
+              $cxn=Conexion::conectar();
+              $sec=$cxn->query("SELECT * FROM ficha inner join formacion on ficha.id_formacion=formacion.id_formacion WHERE ficha.estado=1");
+
+              while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
+                echo "<option value='$row[id_ficha]'>$row[ficha]- $row[programa]</option>";
+              }
+
+      echo" </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Jornada:</td>
+            <td>".$x["jornada"]."</td>
+            <td>
+              <select class=form-control name='n_id_jornada'>
+              <option value='$x[id_jornada]'>$x[jornada]</option>";
+
+            require_once '../../model/conexion.php';
+            $cxn=Conexion::conectar();
+            $sec=$cxn->query("SELECT * FROM jornada");
+            while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
+              echo "<option value='$row[id_jornada]'>$row[jornada]</option>";
+            }
+
+      echo"</select>
+            </td>            
+          </tr>
+          <tr>
+            <td>Trimestre:</td>
+            <td>".$x["trimestre"]."</td>
+            <td>
+              <select class=form-control name='n_id_trimestre'>
+              <option value='$x[id_trimestre]'>$x[trimestre]</option>";
+
+            require_once '../../model/conexion.php';
+            $cxn=Conexion::conectar();
+            $sec=$cxn->query("SELECT * FROM trimestre");
+            while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
+              echo "<option value='$row[id_trimestre]'>$row[trimestre]</option>";
+            }
+
+            echo "</select></td>          
+          </tr>";
+        }
+
+        echo "</table>";
       }
 
       ?>
@@ -112,11 +234,45 @@ include '../../elementos/admin/nav2.php';
       <table width="100%">
         <tr>
           <td>
-            <button class="btn form-control">Actualizar Datos</button>
+            <a data-toggle='modal' data-target='#confirmar'>
+              <button class="btn form-control">Actualizar Datos</button>
+            </a>
+            
+            <div class='modal fade' id='confirmar' role='dialog'>
+              <div class='modal-dialog'>
+                <!--Confirma la contraseña para borrar lo que desea-->
+                  <div class='modal-content'>
+                    <div class='modal-header'>
+                      <button type='button' class='close' data-dismiss='modal'>×</button>
+                      <h4><span class='glyphicon glyphicon-ok'></span> Confirmar</h4>
+                    </div>
+                    <div class='modal-body'>
+                      <form action='../../negocio/actualizar/datosUsuario.php' method='post'>
+
+                        <div class='form-group'>
+                          <p align='center'>¿Desea actualizar los datos de este usuario?</p>
+                          <p align='center'>Para poder continuar por favor digite su contraseña.</p>
+                        </div>
+                        <div class='form-group'>
+                          <label for='usrname'><span class='glyphicon glyphicon-lock'></span> Contraseña:</label>
+                          <input type='password' name='contrasena' class='form-control' placeholder='Contraseña' required>
+                          <input type='checkbox' value='1' required> Estoy seguro.
+                        </div>
+                          <button type='submit' class='btn btn-block'>Continuar</button>
+                      </form>
+                    </div>
+                    <div class='modal-footer'>
+                      <button type='submit' class='btn btn-default pull-center' data-dismiss='modal'>
+                        <span class='glyphicon glyphicon-remove'></span> Cancelar
+                      </button>
+                    </div>
+                  </div>
+              </div>
+            </div>
         </form>
           </td>
           <td>
-            <form action="inicio.php"><button class="btn form-control">Volver al inicio</button></form>
+            <form action='inicio.php'><button class='btn form-control'>Volver</button></form>
           </td> 
         </tr>
       </table>     

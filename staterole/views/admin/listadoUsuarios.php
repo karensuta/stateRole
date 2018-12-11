@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +26,26 @@ include '../../elementos/admin/nav2.php';
   <div class="container"><h1 style="color: #fff;">Usuarios del Sistema</h1></div>
 </header>
 
+<?php
+  //las contraseñas no coinsiden con el usuario
+  if ($_SESSION["usuario"]==1) {
+    echo"<div class='alert alert-danger text-center'>
+          <strong>Aviso!</strong> La contraseña no coincide.
+        </div>";
+      $_SESSION["usuario"]=0;
+  }
 
-  <div class="container-fluid" style="background-color: #fff; padding: 120px;">
+  //se elimino correctamente
+  if ($_SESSION["usuario"]==2) {
+    echo"<div class='alert alert-success text-center'>
+          <strong>Exito!</strong> El usuario se elimino correctamente del sistema.
+        </div>";
+      $_SESSION["usuario"]=0;
+  }
+?>
+
+
+  <div class="container-fluid table-responsive" style="background-color: #fff; padding: 120px;">
     <table width="100%" border="0">
       <?php 
 
@@ -38,7 +56,6 @@ include '../../elementos/admin/nav2.php';
 
       echo "<table class='table'>
               <thead>
-                <th>ID</th>
                 <th>Primer Nombre</th>
                 <th>Segundo Nombre</th>
                 <th>Primer Apellido</th>
@@ -53,7 +70,6 @@ include '../../elementos/admin/nav2.php';
       foreach ($res as $x) {
         echo "
         <tr>
-          <td>".$x["id_usuario"]."</td>
           <td>".$x["p_nombre"]."</td>
           <td>".$x["s_nombre"]."</td>
           <td>".$x["p_apellido"]."</td>
@@ -62,14 +78,52 @@ include '../../elementos/admin/nav2.php';
           <td>".$x["documento"]."</td>
           <td>".$x["correo"]."</td>
           <td>".$x["rol"]."</td>
-          <td>
-            <form action='' method='post'>
-          <input type='hidden' name='documento' value=".$x['documento'].">
-          <button class='btn fa fa-times-circle'></button>
-        </form>
+          <td>";
+
+          if($x["id_rol"] == 2)
+          {  
+          echo "
+            <a data-toggle='modal' data-target='#$x[documento]'>
+              <button class='btn fa fa-times-circle'></button>
+            </a>
           </td>
 
-        </tr>";
+        </tr>
+
+        <div class='modal fade' id='$x[documento]' role='dialog'>
+          <div class='modal-dialog'>
+            <!--Confirma la contraseña para borrar lo que desea-->
+              <div class='modal-content'>
+                <div class='modal-header'>
+                  <button type='button' class='close' data-dismiss='modal'>×</button>
+                  <h4><span class='glyphicon glyphicon-ok'></span> Confirmar</h4>
+                </div>
+                <div class='modal-body'>
+                  <form action='../../negocio/eliminar/usuarios.php' method='post'>
+
+                    <div class='form-group'>
+                      <p align='center'>Desea eliminar este usuario del sistema.</p>
+                      <p align='center'>Para poder continuar por favor digite su contraseña.</p>
+                    </div>
+                    <div class='form-group'>
+                      <label for='usrname'><span class='glyphicon glyphicon-lock'></span> Contraseña:</label>
+                      <input type='password' name='contrasena' class='form-control' placeholder='Contraseña' required>
+                      <input type='checkbox' value='1' required> Estoy seguro.
+                    </div>
+                      <input type=hidden name=doc value=".$x["documento"].">
+                      <button type='submit' class='btn btn-block'>Continuar</button>
+                  </form>
+                </div>
+                <div class='modal-footer'>
+                  <button type='submit' class='btn btn-danger btn-default pull-center' data-dismiss='modal'>
+                    <span class='glyphicon glyphicon-remove'></span> Cancelar
+                  </button>
+                </div>
+              </div>
+          </div>
+        </div>
+
+        ";}
       }
 
       ?>
@@ -83,6 +137,40 @@ include '../../elementos/admin/nav2.php';
       </table>     
       
   </div>
+
+
+  <!-- Ventana de la informacion -->
+
+<div class="modal fade" id="confirmar" role="dialog">
+  <div class="modal-dialog">
+    <!-- el buscar que aperece-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">×</button>
+          <h4><span class=""></span>Confirmar</h4>
+        </div>
+        <div class="modal-body">
+          <form action="#" method="post">
+
+            <div class="form-group">
+              <p align="center">Para poder continuar por favor digite su contraseña.</p>
+            </div>
+            <div class="form-group">
+              <label for="usrname"><span class="glyphicon glyphicon-lock"></span> Contraseña:</label>
+              <input type="password" name="documento" class="form-control" placeholder="Contraseña" required>
+              <input type="checkbox" value="1" required> Desea eliminar esta habilitación.
+            </div>
+              <button type="submit" class="btn btn-block">Continuar</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger btn-default pull-center" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span> Cancelar
+          </button>
+        </div>
+      </div>
+  </div>
+</div>
 
 
 <br><br><br>

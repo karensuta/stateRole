@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +69,7 @@ if ($_SESSION["repetir"]==1) {
             <?php
               require_once '../../model/conexion.php';
               $cxn=Conexion::conectar();
-              $sec=$cxn->query("SELECT * FROM formacion");
+              $sec=$cxn->query("SELECT * FROM formacion WHERE estado=1");
 
               while ($row=$sec->fetch(PDO::FETCH_ASSOC)) {
                 echo "<option value='$row[id_formacion]'>$row[programa]</option>";

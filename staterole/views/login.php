@@ -40,6 +40,8 @@
 						</div>";
 					$_SESSION["login"]=0;
 				}
+
+				
 			?>
 			<form action="../negocio/registro/iniciarSesion.php" method="post">
 				<input type="text" placeholder="Documento" pattern="[0-9]{5,13}" title="Sólo puede ingresar números" name="documento" required>
@@ -79,11 +81,11 @@
 
 					?>
   					
-				<input type="text" placeholder="Primer Nombre" name="p_nombre" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras" required>
-				<input type="text" placeholder="Segundo Nombre" name="s_nombre" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras" required>
-				<input type="text" placeholder="Primer Apellido" name="p_apellido" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras" required>
+				<input type="text" placeholder="Primer Nombre*" name="p_nombre" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras" required>
+				<input type="text" placeholder="Segundo Nombre" name="s_nombre" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras">
+				<input type="text" placeholder="Primer Apellido*" name="p_apellido" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras" required>
 
-				<input type="text" placeholder="Segundo Apellido" name="s_apellido" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras" required>
+				<input type="text" placeholder="Segundo Apellido" name="s_apellido" pattern="[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,20}" title="Sólo puede ingresar letras">
 				<select  name="id_tipo_documento">
 					<option value="1" >Cédula de Ciudadania</option>
 				<?php
@@ -98,6 +100,7 @@
 				</select><br>
 				<input type="text" placeholder="Documento" name="documento"pattern="[0-9]{5,13}" title="Sólo puede ingresar números" required>
 				<input type="email" placeholder="Correo" name="correo" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" title="ejemplo@example.com" required>
+				<input type="hidden" value="2" name="id_rol" required>
 				<input type="password" placeholder="Contraseña" name="contrasena" required>
 				<input type="password" placeholder="Confirmar contraseña" name="c_contrasena" required>
 				

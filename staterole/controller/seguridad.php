@@ -22,9 +22,13 @@ class Seguridad
 				header('location: ../views/instructor/inicio.php');
 			}
 
-			if ($x["id_rol"] >= 3) {
+			if ($x["id_rol"] == 3) {
 				$_SESSION["login"]=$_SESSION["login"]+4;
-				header('location: ../views/admin/inicio.php');
+				header('location: ../views/instructor/inicio.php');
+			}
+
+			if ($x["id_rol"] == 5) {
+				header('location: ../views/super/inicio.php');
 			}
 
 		}

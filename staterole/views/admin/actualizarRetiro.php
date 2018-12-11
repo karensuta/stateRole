@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,20 +12,18 @@
 
 <header>
     <div class="container">
-      <h1>ACTUALIZAR RETIRO VOLUNTARIO</h1>
+      <h1>RETIRO VOLUNTARIO</h1>
     </div>
   </header>
 <br><br><br><br>
 <div class="cuadro">
 
   <?php
-  session_start();
   require_once '../../controller/adminController.php';
 
-  $id_usuario = $_POST["id_usuario"];
-
+  $novedad=10;
   $apre = new Administrador();
-  $res = $apre->aprendiz($_POST["documento"]);
+  $res = $apre->aprendiz($_POST["documento"],$novedad);
 
   foreach ($res as $x) {
     echo "
@@ -154,7 +152,7 @@
       </form>
         </div>
         <div class=col-md-6>
-          <form action='listadoRetiro.php'><button class='btn btn-danger form-control' type='submit'>volver</button></form>
+          <form action='listadoNovedad.php'><button class='btn btn-danger form-control' type='submit'>volver</button></form>
         </div>
       </div>
     

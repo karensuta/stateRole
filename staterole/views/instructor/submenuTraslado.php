@@ -1,3 +1,4 @@
+<?php include '../../seguridad/seguridadIns.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
 
 <?php
 //nav
-include '../../elementos/admin/nav2.php';
+include '../../elementos/instructor/nav2.php';
 ?>  
   
 

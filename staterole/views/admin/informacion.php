@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,16 +26,16 @@ include '../../elementos/admin/nav2.php';
   <div class="container"><h1 style="color: #fff;">Datos Personales</h1></div>
 </header>
 
-  <div class="container" style="background-color: #fff; padding: 100px; ">
+  <div class="container table-responsive" style="background-color: #fff; padding: 100px; ">
 
     
     <table width="100%" border="0">
       <?php 
 
       require_once '../../controller/adminController.php';
-
+      $rol=0;
       $usuario = new Administrador();
-      $us = $usuario->consultarUsuario($_POST["documento"]);
+      $us = $usuario->consultarUsuario($_POST["documento"],$rol);
 
       foreach ($us as $x) {
         echo "<table width=100%>
@@ -79,6 +79,7 @@ include '../../elementos/admin/nav2.php';
           <td>
             <form action='actualizacionDatos.php' method='post'>
               <input type='hidden' name='doc' value=".$x["documento"].">
+              <input type='hidden' name='rolC' value=".$x["id_rol"].">
               <button class='btn form-control'>Actualizar Datos</button>
             </form>
           </td>

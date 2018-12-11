@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,7 +44,7 @@ if ($_SESSION["repetirH"]==1) {
 
 
 <div class="cuadro" style="padding: 90px;">
-  <div class="container" style="background-color: #fff">
+  <div class="container table-responsive" style="background-color: #fff">
     
     <table width="100%" border="0">
       <form action="../../negocio/registro/datoHabilitar.php" method="post">
@@ -76,6 +76,7 @@ if ($_SESSION["repetirH"]==1) {
   </div>
 </div>
 
+<div style="padding: 2%;"></div>
 <br><br><br>
 <!-- Footer -->
 <?php include '../../elementos/footer.php'; ?>

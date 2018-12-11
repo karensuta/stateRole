@@ -1,4 +1,4 @@
-S<?php 
+<?php 
 session_start();
 require_once '../../controller/adminController.php';
 

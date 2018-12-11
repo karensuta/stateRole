@@ -4,11 +4,11 @@ require_once '../../model/login.php';
 class Login
 {
 	//Este es el inicio de sesion
-	public function iniciarSesion($documento,$contrasena){
+	public static function iniciarSesion($documento,$contrasena){
 		$res = Ingreso::iniciarSesion($documento,$contrasena);
 	}
 
-	public function registrarUsuario($p_nombre,$s_nombre,$p_apellido,$s_apellido,$id_tipo_documento,$documento,$correo,$contrasena){
+	public function registrarUsuario($p_nombre,$s_nombre,$p_apellido,$s_apellido,$id_tipo_documento,$documento,$correo,$id_rol,$contrasena){
 
 		$datos = array('p_nombre' => $_POST["p_nombre"],
 						's_nombre' => $_POST["s_nombre"],
@@ -17,6 +17,7 @@ class Login
 						'id_tipo_documento' => $_POST["id_tipo_documento"],
 						'documento' => $_POST["documento"],
 						'correo' => $_POST["correo"],
+						'id_rol' => $_POST["id_rol"],
 						'contrasena' => $_POST["contrasena"]);
 
 		$res = Ingreso::habilitado($documento);

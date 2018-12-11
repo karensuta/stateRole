@@ -1,3 +1,4 @@
+<?php include '../../seguridad/seguridadIns.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +19,7 @@
 
 <?php
 //nav
-include '../../elementos/instructor/nav2.php';
+include '../../elementos/admin/nav2.php';
 ?>  
 
 <header>
@@ -41,14 +42,14 @@ if ($_SESSION["eliminar"]==1) {
   $_SESSION["eliminar"]=0;
 }
 ?>
-  <div class="container-fluid" style="background-color: #fff; padding: 150px; ">
+  <div class="container-fluid table-responsive" style="background-color: #fff; padding: 150px; ">
     
     <table width="100%" border="0">
       <?php 
 
-      require_once '../../controller/insController.php';
+      require_once '../../controller/adminController.php';
 
-      $lista = new Instructor();
+      $lista = new Administrador();
       $res = $lista->listadoCSede();
 
       echo "<table class='table'>
@@ -62,6 +63,7 @@ if ($_SESSION["eliminar"]==1) {
                 <th>Correo</th>
                 <th>Fecha</th>
                 <th>Observación</th>
+                <th>Estado</th>
               </thead>";
 
       foreach ($res as $x) {
@@ -76,6 +78,18 @@ if ($_SESSION["eliminar"]==1) {
           <td>".$x["correo"]."</td>
           <td>".$x["fecha"]."</td>
           <td>".$x["observacion"]."</td>
+          <td>";
+          if ($x["estado_novedad"]==1) {
+            echo "<p style='color:#0080ff;'>En proceso...</p>";
+          }
+          if ($x["estado_novedad"]==2) {
+            echo "<p style='color:#009900;'>Aprovado</p>";
+          }
+          if ($x["estado_novedad"]==3) {
+            echo "<p style='color:#ff0000;'>Rechazado</p>";
+          }
+          echo "</td>
+
         </tr>";
       }
 

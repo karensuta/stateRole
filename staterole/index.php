@@ -4,6 +4,7 @@
 <?php 
 session_start();
 $_SESSION["documento"]=0;
+$_SESSION["id_rol"]=0;
 $_SESSION["login"]=0;
 $_SESSION["cont"]=0;
 $_SESSION["habilitado"]=0;
@@ -81,7 +82,7 @@ body, html {height: 100%}
     <p class="w3-large">Brayan Stiven Martinez<br>
     Jeisson Farid Sanchez<br>
     Karen Jineth Suta<br>
-    lorena casallas</p>
+    Lorena Casallas</p>
   </div>
 </div>
 

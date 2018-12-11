@@ -10,7 +10,7 @@ class Admin extends Conexion
 	//consulta si existe el usuario
 	public static function existeUsuario($documento){
 
-		$res = Conexion::conectar()->prepare("SELECT * FROM usuario WHERE documento='$documento'");
+		$res = Conexion::conectar()->prepare("SELECT * FROM usuario WHERE documento='$documento' AND estado=1");
 		$res->execute();
 		$cont=0;
 
@@ -21,18 +21,34 @@ class Admin extends Conexion
 	}
 
 	//consulta datos de los usuarios
-	public static function consultarUsuario($documento){
+	public static function usuario($documento,$rolC){
 
-		$us = Conexion::conectar()->prepare("SELECT * FROM usuario INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento INNER JOIN rol ON usuario.id_rol=rol.id_rol WHERE documento='$documento'");
-		$us->execute();
+		if ($rolC == 3) {
+			$us = Conexion::conectar()->prepare("SELECT * FROM usuario INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento
+																	INNER JOIN rol ON usuario.id_rol=rol.id_rol 
+																	INNER JOIN sede ON usuario.id_sede=sede.id_sede
+																	INNER JOIN ficha ON usuario.id_ficha=ficha.id_ficha
+																	INNER JOIN formacion On ficha.id_formacion=formacion.id_formacion
+																	INNER JOIN jornada ON usuario.id_jornada=jornada.id_jornada
+																	INNER JOIN trimestre ON usuario.id_trimestre=trimestre.id_trimestre
+																	WHERE documento='$documento'");
+			$us->execute();
+			return $us;
+		}else{
+			$us = Conexion::conectar()->prepare("SELECT * FROM usuario INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento
+																	INNER JOIN rol ON usuario.id_rol=rol.id_rol
+																	WHERE documento='$documento'");
+			$us->execute();	
+			return $us;
+		}
 
-		return $us;
+		
 	}
 
 	//lista de los usuarios registrados en el sistema
 	public static function listadoUsuarios($tabla){
 
-		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join tipo_documento on $tabla.id_tipo_documento=tipo_documento.id_tipo_documento INNER JOIN rol ON $tabla.id_rol=rol.id_rol" );
+		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join tipo_documento on $tabla.id_tipo_documento=tipo_documento.id_tipo_documento INNER JOIN rol ON $tabla.id_rol=rol.id_rol WHERE estado=1 AND rol.id_rol!=3 " );
 		$res->execute();
 
 		return $res;
@@ -41,7 +57,7 @@ class Admin extends Conexion
 	//Habilitado repetido 
 	public static function repetirHabilitado($documento){
 
-		$ha = Conexion::conectar()->prepare("SELECT * FROM habilitados WHERE documento='$documento'");
+		$ha = Conexion::conectar()->prepare("SELECT * FROM habilitados WHERE documento='$documento' AND estado=1");
 		$ha->execute();
 		
 		$cont=0;
@@ -64,31 +80,81 @@ class Admin extends Conexion
 
 	//lista de los uasuarios habilitados
 	public static function listaHabilitado($tabla){
-		$ha = Conexion::conectar()->prepare("SELECT * FROM $tabla");
+		$ha = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE estado=1");
 		$ha->execute();
 
 		return $ha;
 	}
+
+	//elimina el usuario habilitado cambiandole el estado
+	public static function eliminarHabilitado($doc){
+		$ha = Conexion::conectar()->prepare("UPDATE habilitados SET estado=0 WHERE documento=$doc");
+		$ha->execute();
+	}
+
+	//elimina el usuario cambiandole el estado
+	public static function eliminarUsuario($doc){
+		$ha = Conexion::conectar()->prepare("UPDATE usuario SET estado=0 WHERE documento=$doc");
+		$ha->execute();
+	}
 	
+	//elimina el aprendiz cambiandole el estado
+	public static function eliminarAprendiz($doc){
+		$ha = Conexion::conectar()->prepare("UPDATE usuario SET estado=0 WHERE documento=$doc");
+		$ha->execute();
+	}
+
+	//elimina el programa cambiandole el estado
+	public static function eliminarPrograma($for){
+		$ha = Conexion::conectar()->prepare("UPDATE formacion SET estado=0 WHERE id_formacion=$for");
+		$ha->execute();
+	}
+
+	//elimina la ficha cambiandole el estado
+	public static function eliminarFicha($ficha){
+		$ha = Conexion::conectar()->prepare("UPDATE ficha SET estado_ficha=0 WHERE id_ficha=$ficha");
+		$ha->execute();
+	}
+
 	//-----------------------
 	// 	Actualizar
 	//-----------------------
 
 	//actualiza datos de los usuarios
-	public static function actualizarDatos($datos,$doc,$tabla){
+	public static function actualizarDatos($datos,$doc,$tabla,$rolC){
 
-		$ac = Conexion::conectar()->prepare("UPDATE $tabla SET p_nombre=:p_nombre, s_nombre=:s_nombre, p_apellido=:p_apellido, s_apellido=:s_apellido, id_tipo_documento=:id_tipo_documento, documento=:documento, correo=:correo, id_rol=:id_rol WHERE documento='$doc'");
+		if ($rolC==3) {
+			
+			$ac = Conexion::conectar()->prepare("UPDATE $tabla SET p_nombre=:p_nombre, s_nombre=:s_nombre, p_apellido=:p_apellido, s_apellido=:s_apellido, id_tipo_documento=:id_tipo_documento, correo=:correo, id_rol=:id_rol, id_sede=:id_sede, id_ficha=:id_ficha, id_jornada=:id_jornada, id_trimestre=:id_trimestre WHERE documento='$doc'");
 
-		$ac->bindParam(":p_nombre",$datos["p_nombre"], PDO::PARAM_STR);
-		$ac->bindParam(":s_nombre",$datos["s_nombre"], PDO::PARAM_STR);
-		$ac->bindParam(":p_apellido",$datos["p_apellido"], PDO::PARAM_STR);
-		$ac->bindParam(":s_apellido",$datos["s_apellido"], PDO::PARAM_STR);
-		$ac->bindParam(":id_tipo_documento",$datos["id_tipo_documento"], PDO::PARAM_STR);
-		$ac->bindParam(":documento",$datos["documento"], PDO::PARAM_STR);
-		$ac->bindParam(":correo",$datos["correo"], PDO::PARAM_STR);
-		$ac->bindParam(":id_rol",$datos["id_rol"], PDO::PARAM_STR);
+			$ac->bindParam(":p_nombre",$datos["p_nombre"], PDO::PARAM_STR);
+			$ac->bindParam(":s_nombre",$datos["s_nombre"], PDO::PARAM_STR);
+			$ac->bindParam(":p_apellido",$datos["p_apellido"], PDO::PARAM_STR);
+			$ac->bindParam(":s_apellido",$datos["s_apellido"], PDO::PARAM_STR);
+			$ac->bindParam(":id_tipo_documento",$datos["id_tipo_documento"], PDO::PARAM_STR);
+			$ac->bindParam(":correo",$datos["correo"], PDO::PARAM_STR);
+			$ac->bindParam(":id_rol",$datos["id_rol"], PDO::PARAM_STR);
+			$ac->bindParam(":id_sede",$datos["id_sede"], PDO::PARAM_STR);
+			$ac->bindParam(":id_ficha",$datos["id_ficha"], PDO::PARAM_STR);
+			$ac->bindParam(":id_jornada",$datos["id_jornada"], PDO::PARAM_STR);
+			$ac->bindParam(":id_trimestre",$datos["id_trimestre"], PDO::PARAM_STR);
 
-		$ac->execute();
+			$ac->execute();
+
+		}else{
+
+			$ac = Conexion::conectar()->prepare("UPDATE $tabla SET p_nombre=:p_nombre, s_nombre=:s_nombre, p_apellido=:p_apellido, s_apellido=:s_apellido, id_tipo_documento=:id_tipo_documento, correo=:correo, id_rol=:id_rol WHERE documento='$doc'");
+
+			$ac->bindParam(":p_nombre",$datos["p_nombre"], PDO::PARAM_STR);
+			$ac->bindParam(":s_nombre",$datos["s_nombre"], PDO::PARAM_STR);
+			$ac->bindParam(":p_apellido",$datos["p_apellido"], PDO::PARAM_STR);
+			$ac->bindParam(":s_apellido",$datos["s_apellido"], PDO::PARAM_STR);
+			$ac->bindParam(":id_tipo_documento",$datos["id_tipo_documento"], PDO::PARAM_STR);
+			$ac->bindParam(":correo",$datos["correo"], PDO::PARAM_STR);
+			$ac->bindParam(":id_rol",$datos["id_rol"], PDO::PARAM_STR);
+
+			$ac->execute();
+		}
 	}
 
 //-------------------------------------------
@@ -153,7 +219,7 @@ class Admin extends Conexion
 											INNER JOIN ficha ON $tabla.id_ficha=ficha.id_ficha 
 											INNER JOIN jornada ON $tabla.id_jornada=jornada.id_jornada 
 											INNER JOIN trimestre ON $tabla.id_trimestre=trimestre.id_trimestre
-											WHERE id_rol=3 order by id_usuario asc" );
+											WHERE id_rol=3 AND $tabla.estado=1 order by id_usuario asc" );
 		$res->execute();
 
 		return $res;
@@ -163,17 +229,17 @@ class Admin extends Conexion
 	// 	Desercion
 	//-----------------------
 
-	//imprime datos del aprendiz hacer la desercion
-	public function aprendiz($documento){
+	//imprime datos del aprendiz hacer la desercion - imprime si el aprendiz esta registrado
+	public static function aprendiz($documento){
 
 		$apre = Conexion::conectar()->prepare("SELECT * FROM usuario
-												INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento 
-												INNER JOIN sede ON usuario.id_sede=sede.id_sede 
-												INNER JOIN ficha ON usuario.id_ficha=ficha.id_ficha 
-												INNER JOIN formacion ON ficha.id_formacion=formacion.id_formacion
-												INNER JOIN jornada ON usuario.id_jornada=jornada.id_jornada 
-												INNER JOIN trimestre ON usuario.id_trimestre=trimestre.id_trimestre
-												WHERE documento='$documento' AND id_rol=3");
+												LEFT JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento 
+												LEFT JOIN sede ON usuario.id_sede=sede.id_sede 
+												LEFT JOIN ficha ON usuario.id_ficha=ficha.id_ficha 
+												LEFT JOIN formacion ON ficha.id_formacion=formacion.id_formacion
+												LEFT JOIN jornada ON usuario.id_jornada=jornada.id_jornada 
+												LEFT JOIN trimestre ON usuario.id_trimestre=trimestre.id_trimestre
+												WHERE documento=$documento AND id_rol=3");
 		$apre->execute();
 		return $apre;
 	}
@@ -183,17 +249,32 @@ class Admin extends Conexion
 //-------------------------------------------
 
 	//registro del programa de formacion
-	public static function registrarPrograma($programa){
+	public static function registrarPrograma($programa,$id_tipo_programa){
 
-		$pro = Conexion::Conectar()->prepare("INSERT INTO formacion (programa) VALUES (:programa)");
-		$pro->bindParam(":programa",$programa, PDO::PARAM_STR);
-		$pro->execute();
+		$res=Conexion::Conectar()->prepare("SELECT * FROM formacion WHERE programa='$programa'");
+		$res->execute();
+
+		$cont=0;
+
+		foreach ($res as $x) {
+			$cont=$cont+1;
+		}
+
+		if ($cont >= 1) {
+			$_SESSION["programa"]=$_SESSION["programa"]+2;
+			header('location: ../../views/super/registroPrograma.php');
+		}else{
+			$pro = Conexion::Conectar()->prepare("INSERT INTO formacion (programa,id_tipo_programa) VALUES (:programa,:id_tipo_programa)");
+			$pro->bindParam(":programa",$programa, PDO::PARAM_STR);
+			$pro->bindParam(":id_tipo_programa",$id_tipo_programa, PDO::PARAM_STR);
+			$pro->execute();
+		}
 	}
 
 	//lista de los programas registrados en el sistema
 	public static function listadoPrograma($tabla){
 
-		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla" );
+		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE estado=1" );
 		$res->execute();
 
 		return $res;
@@ -206,7 +287,7 @@ class Admin extends Conexion
 	//revisa que la ficha no este registrada
 	public static function repetirFicha($ficha,$tabla){
 
-		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE ficha='$ficha'" );
+		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE ficha='$ficha' AND estado_ficha=1" );
 		$res->execute();
 
 		$cont=0;
@@ -228,7 +309,7 @@ class Admin extends Conexion
 	//lista de las fichas
 	public static function listadoFicha($tabla){
 
-		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla INNER JOIN formacion ON $tabla.id_formacion=formacion.id_formacion" );
+		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla INNER JOIN formacion ON $tabla.id_formacion=formacion.id_formacion WHERE $tabla.estado_ficha=1");
 		$res->execute();
 
 		return $res;
@@ -238,12 +319,37 @@ class Admin extends Conexion
 	//NOVEDADES
 //-------------------------------------------
 
+
+	//verifica que al aprendiz no se le aya registrado una novedad
+	public static function verificaNovedad($documento){
+
+		$re=Conexion::conectar()->prepare("SELECT * FROM novedad INNER JOIN usuario ON novedad.id_usuario=usuario.id_usuario WHERE documento='$documento' AND novedad.estado_novedad>0");
+		$re->execute();
+		$con=0;
+		foreach ($re as $x) {
+			$con=$con+1;
+		}
+		return $con;
+	}
+
 	//trae infomacion de la tabla novedad
 	public static function novedad($id_usuario,$id_tipo_novedad){
 
 		$ac = Conexion::conectar()->prepare("SELECT * FROM novedad WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
 		$ac->execute();
 		return $ac;
+	}
+
+	//actualiza el estado de la novedad (en proceso, aprovado, rechazado)
+	public static function estadoNovedad($id_usuario,$novedad){
+		$re = Conexion::conectar()->prepare("UPDATE novedad SET estado_novedad='$novedad' WHERE id_usuario='$id_usuario'");
+		$re->execute();
+	}
+
+	//Eliminar(cambia el estado de las novedades en 0)
+	public  static function eliminarNovedad($nov){
+		$eli = Conexion::conectar()->prepare("UPDATE novedad SET estado_novedad=0 WHERE id_novedad=$nov");
+		$eli->execute();
 	}
 
 	//----------------
@@ -265,8 +371,8 @@ class Admin extends Conexion
 	//lista de los usuarios registrados en el sistema
 	public static function consultarDesercion($tabla){
 
-		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join usuario on $tabla.id_usuario=usuario.id_usuario 
-											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=1");
+		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla INNER join usuario on $tabla.id_usuario=usuario.id_usuario 
+											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=1 AND $tabla.estado_novedad=1");
 		$res->execute();
 
 		return $res;
@@ -275,17 +381,11 @@ class Admin extends Conexion
 	//Actualiza desercion
 	public static function actualizarDesercion($datos,$id_usuario,$id_tipo_novedad){
 
-		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
+		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion, estado_novedad=1 WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
 
 		$ac->bindParam(":fecha",$datos["fecha"], PDO::PARAM_STR);
 		$ac->bindParam(":observacion",$datos["observacion"], PDO::PARAM_STR);
 		$ac->execute();
-	}
-
-	//Elimina desercion
-	public  static function eliminarDesercion($id_usuario,$id_tipo_novedad){
-		$eli = Conexion::conectar()->prepare("DELETE FROM novedad WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
-		$eli->execute();
 	}
 
 	//----------------
@@ -308,7 +408,7 @@ class Admin extends Conexion
 	public static function consultarCJornada($tabla){
 
 		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join usuario on $tabla.id_usuario=usuario.id_usuario 
-											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=6");
+											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=6 AND $tabla.estado_novedad>=1");
 		$res->execute();
 
 		return $res;
@@ -317,17 +417,11 @@ class Admin extends Conexion
 	//Actualiza desercion
 	public static function actualizarCJornada($datos,$id_usuario,$id_tipo_novedad){
 
-		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
+		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion, estado_novedad=1 WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
 
 		$ac->bindParam(":fecha",$datos["fecha"], PDO::PARAM_STR);
 		$ac->bindParam(":observacion",$datos["observacion"], PDO::PARAM_STR);
 		$ac->execute();
-	}
-
-	//Elimina cambio de jornada
-	public  static function eliminarCJornada($id_usuario,$id_tipo_novedad){
-		$eli = Conexion::conectar()->prepare("DELETE FROM novedad WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
-		$eli->execute();
 	}
 
 	//----------------
@@ -350,7 +444,7 @@ class Admin extends Conexion
 	public static function consultarCSede($tabla){
 
 		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join usuario on $tabla.id_usuario=usuario.id_usuario 
-											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=5");
+											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=5 AND $tabla.estado_novedad>=1");
 		$res->execute();
 
 		return $res;
@@ -359,17 +453,11 @@ class Admin extends Conexion
 	//Actualiza desercion
 	public static function actualizarCSede($datos,$id_usuario,$id_tipo_novedad){
 
-		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
+		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion, estado_novedad=1 WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
 
 		$ac->bindParam(":fecha",$datos["fecha"], PDO::PARAM_STR);
 		$ac->bindParam(":observacion",$datos["observacion"], PDO::PARAM_STR);
 		$ac->execute();
-	}
-
-	//Elimina cambio de sede
-	public  static function eliminarCSede($id_usuario,$id_tipo_novedad){
-		$eli = Conexion::conectar()->prepare("DELETE FROM novedad WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
-		$eli->execute();
 	}
 
 	//----------------
@@ -392,7 +480,7 @@ class Admin extends Conexion
 	public static function consultarAplazamiento($tabla){
 
 		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join usuario on $tabla.id_usuario=usuario.id_usuario 
-											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=2");
+											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=2 AND $tabla.estado_novedad>=1");
 		$res->execute();
 
 		return $res;
@@ -401,17 +489,11 @@ class Admin extends Conexion
 	//Actualiza aplazamiento
 	public static function actualizarAplazamiento($datos,$id_usuario,$id_tipo_novedad){
 
-		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
+		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion, estado_novedad=1 WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
 
 		$ac->bindParam(":fecha",$datos["fecha"], PDO::PARAM_STR);
 		$ac->bindParam(":observacion",$datos["observacion"], PDO::PARAM_STR);
 		$ac->execute();
-	}
-
-	//Elimina Aplazamiento
-	public  static function eliminarAplazamiento($id_usuario,$id_tipo_novedad){
-		$eli = Conexion::conectar()->prepare("DELETE FROM novedad WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
-		$eli->execute();
 	}
 
 	//----------------
@@ -434,7 +516,7 @@ class Admin extends Conexion
 	public static function consultarReingreso($tabla){
 
 		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join usuario on $tabla.id_usuario=usuario.id_usuario 
-											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=3");
+											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=3 AND $tabla.estado_novedad>=1");
 		$res->execute();
 
 		return $res;
@@ -443,17 +525,11 @@ class Admin extends Conexion
 	//Actualiza Reingreso
 	public static function actualizarReingreso($datos,$id_usuario,$id_tipo_novedad){
 
-		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
+		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion, estado_novedad=1 WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
 
 		$ac->bindParam(":fecha",$datos["fecha"], PDO::PARAM_STR);
 		$ac->bindParam(":observacion",$datos["observacion"], PDO::PARAM_STR);
 		$ac->execute();
-	}
-
-	//Elimina Reingreso
-	public  static function eliminarReingreso($id_usuario,$id_tipo_novedad){
-		$eli = Conexion::conectar()->prepare("DELETE FROM novedad WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
-		$eli->execute();
 	}
 
 	//----------------
@@ -476,7 +552,7 @@ class Admin extends Conexion
 	public static function consultarRetiro($tabla){
 
 		$res = Conexion::conectar()->prepare("SELECT * FROM $tabla inner join usuario on $tabla.id_usuario=usuario.id_usuario 
-											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=4");
+											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento WHERE id_tipo_novedad=4 AND $tabla.estado_novedad>=1");
 		$res->execute();
 
 		return $res;
@@ -485,23 +561,110 @@ class Admin extends Conexion
 	//Actualiza Retiro
 	public static function actualizarRetiro($datos,$id_usuario,$id_tipo_novedad){
 
-		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
+		$ac = Conexion::conectar()->prepare("UPDATE novedad SET fecha=:fecha, observacion=:observacion, estado_novedad=1 WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
 
 		$ac->bindParam(":fecha",$datos["fecha"], PDO::PARAM_STR);
 		$ac->bindParam(":observacion",$datos["observacion"], PDO::PARAM_STR);
 		$ac->execute();
 	}
 
-	//Elimina Retiro
-	public  static function eliminarRetiro($id_usuario,$id_tipo_novedad){
-		$eli = Conexion::conectar()->prepare("DELETE FROM novedad WHERE id_usuario='$id_usuario' AND id_tipo_novedad='$id_tipo_novedad'");
-		$eli->execute();
+	//----------------
+	// 	Listado Novedades
+	//----------------
+
+	//imprime todas las novedades
+
+	//lista de las novedades registradas
+	public static function consultarNovedad($tabla,$novedad){
+
+		if ($novedad == 0) {
+			$res = Conexion::conectar()->prepare("SELECT * FROM $tabla INNER join usuario on $tabla.id_usuario=usuario.id_usuario 
+											 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento
+											 INNER join tipo_novedad on $tabla.id_tipo_novedad=tipo_novedad.id_tipo_novedad Where $tabla.estado_novedad >= 1");
+			$res->execute();
+
+			return $res;
+
+		}else{
+
+			$res = Conexion::conectar()->prepare("SELECT * FROM $tabla INNER join usuario on $tabla.id_usuario=usuario.id_usuario 
+												 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento
+												 INNER join tipo_novedad on $tabla.id_tipo_novedad=tipo_novedad.id_tipo_novedad Where $tabla.estado_novedad = 1");
+			$res->execute();
+
+			return $res;
+		}
+	}
+
+	//historial del sistema
+	public static function historial($his){
+
+		if ($his=="habilitados") {
+			$hist = Conexion::conectar()->prepare("SELECT * FROM $his");
+			$hist->execute();
+			return $hist;
+		}
+		if ($his=="usuario") {
+			$hist = Conexion::conectar()->prepare("SELECT * FROM $his inner join tipo_documento on $his.id_tipo_documento=tipo_documento.id_tipo_documento INNER JOIN rol ON $his.id_rol=rol.id_rol WHERE rol.id_rol!=3");
+			$hist->execute();
+			return $hist;
+		}
+		if ($his=="usuario2") {
+			$hist = Conexion::conectar()->prepare("SELECT * FROM usuario
+											INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento 
+											INNER JOIN sede ON usuario.id_sede=sede.id_sede 
+											INNER JOIN ficha ON usuario.id_ficha=ficha.id_ficha 
+											INNER JOIN jornada ON usuario.id_jornada=jornada.id_jornada 
+											INNER JOIN trimestre ON usuario.id_trimestre=trimestre.id_trimestre
+											WHERE id_rol=3");
+			$hist->execute();
+			return $hist;
+		}
+		if ($his=="ficha") {
+			$hist = Conexion::conectar()->prepare("SELECT * FROM $his");
+			$hist->execute();
+			return $hist;
+		}
+		if ($his=="formacion") {
+			$hist = Conexion::conectar()->prepare("SELECT * FROM $his");
+			$hist->execute();
+			return $hist;
+		}
+		if ($his=="novedad") {
+			$hist = Conexion::conectar()->prepare("SELECT * FROM $his INNER join usuario on $his.id_usuario=usuario.id_usuario 
+												 INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento
+												 INNER join tipo_novedad on $his.id_tipo_novedad=tipo_novedad.id_tipo_novedad order by $his.id_novedad asc");
+			$hist->execute();
+			return $hist;
+		}
 	}
 
 
+	//----------------
+	// 	Listado FPDF
+	//----------------
+
+
+	//Imprime las actas 
+	public static function consultarPdf($id_usuario){
+
+		$act = Conexion::conectar()->prepare("SELECT * FROM novedad INNER JOIN usuario on novedad.id_usuario=usuario.id_usuario 
+												INNER JOIN ficha ON usuario.id_ficha=ficha.id_ficha
+												INNER JOIN formacion ON ficha.id_formacion=formacion.id_formacion 
+												INNER JOIN trimestre ON usuario.id_trimestre=trimestre.id_trimestre
+												INNER JOIN jornada ON usuario.id_jornada=jornada.id_jornada
+												INNER JOIN sede ON usuario.id_sede=sede.id_sede
+												INNER JOIN tipo_documento ON usuario.id_tipo_documento=tipo_documento.id_tipo_documento
+												
+
+
+			WHERE novedad.id_usuario=$id_usuario" );
+		$act->execute();
+
+		return $act;
+
+	}
+
 }
-
-
-
 
 ?>

@@ -10,7 +10,7 @@ title{
 	background: url(http://imagenes.palmercol.com/Fondos/ImgFondoLogin.jpg);
 }
 body{
-	background: url(http://imagenes.palmercol.com/Fondos/ImgFondoLogin.jpg);
+	background: url(../../elementos/img/fondo-logo.jpg);
 	-webkit-background-size:cover;
 	background-size: cover;
 	background-attachment: fixed; 

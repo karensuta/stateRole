@@ -12,7 +12,6 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
         <?php
-        session_start();
           require_once '../../model/conexion.php';
           $cxn=Conexion::conectar();
           $sec=$cxn->query("SELECT * FROM usuario INNER JOIN rol ON usuario.id_rol=rol.id_rol WHERE documento='$_SESSION[documento]'");

@@ -4,14 +4,20 @@ require_once ('conexion.php');
 class Ingreso extends Conexion
 {
 	//revisa que el usuario este registrado
-	public  function iniciarSesion($documento,$contrasena){
+	public static function iniciarSesion($documento,$contrasena){
 
 		$da = Conexion::Conectar()->prepare("SELECT * FROM usuario WHERE documento=:documento");
 		$da->execute(array(':documento' => $documento));
 
 		if ($row=$da->fetch(PDO::FETCH_ASSOC)) {
-        	$_SESSION['documento']=$documento;
-			header('location: ../../views/rol.php');
+			if(password_verify($contrasena,$row["contrasena"])){
+	        	$_SESSION["documento"]=$documento;
+	        	$_SESSION["id_rol"]=$row["id_rol"];
+				header('location: ../../views/rol.php');
+			}else{
+				$_SESSION['login']=$_SESSION['login']+3;
+				header('location: ../../views/login.php');
+			}
 		}else{
 			$_SESSION['login']=$_SESSION['login']+3;
 			header('location: ../../views/login.php');
@@ -47,9 +53,9 @@ class Ingreso extends Conexion
 	//registra el usuario
 	public static function registrarUsuario($datos,$tabla){
 
-		$re = Conexion::conectar()->prepare("INSERT INTO $tabla (p_nombre,s_nombre,p_apellido,s_apellido,id_tipo_documento,documento,correo,contrasena) VALUES (:p_nombre,:s_nombre,:p_apellido,:s_apellido,:id_tipo_documento,:documento,:correo,:contrasena)");
+		$re = Conexion::conectar()->prepare("INSERT INTO $tabla (p_nombre,s_nombre,p_apellido,s_apellido,id_tipo_documento,documento,correo,id_rol,contrasena) VALUES (:p_nombre,:s_nombre,:p_apellido,:s_apellido,:id_tipo_documento,:documento,:correo,:id_rol,:contrasena)");
 
-		$pass=password_hash($datos["contrasena"],PASSWORD_DEFAULT);
+		$pass=password_hash($datos["contrasena"],PASSWORD_DEFAULT, array('cost' => 15));
 		$re->bindParam(":p_nombre",$datos["p_nombre"], PDO::PARAM_STR);
 		$re->bindParam(":s_nombre",$datos["s_nombre"], PDO::PARAM_STR);
 		$re->bindParam(":p_apellido",$datos["p_apellido"], PDO::PARAM_STR);
@@ -57,6 +63,7 @@ class Ingreso extends Conexion
 		$re->bindParam(":id_tipo_documento",$datos["id_tipo_documento"], PDO::PARAM_STR);
 		$re->bindParam(":documento",$datos["documento"], PDO::PARAM_STR);
 		$re->bindParam(":correo",$datos["correo"], PDO::PARAM_STR);
+		$re->bindParam(":id_rol",$datos["id_rol"], PDO::PARAM_STR);
 		$re->bindParam(":contrasena",$pass,PDO::PARAM_STR);
 		$re->execute();
 

@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +26,25 @@ include '../../elementos/admin/nav2.php';
   <div class="container"><h1 style="color: #fff;">Lista de Usuarios Habilitados</h1></div>
 </header>
 
+<?php
+  //las contraseñas no coinsiden con el usuario
+  if ($_SESSION["usuario"]==1) {
+    echo"<div class='alert alert-danger text-center'>
+          <strong>Aviso!</strong> La contraseña no coincide.
+        </div>";
+      $_SESSION["usuario"]=0;
+  }
 
-  <div class="container-fluid" style="background-color: #fff; padding: 150px; width: 70%;">
+  //se elimino correctamente
+  if ($_SESSION["usuario"]==2) {
+    echo"<div class='alert alert-success text-center'>
+          <strong>Exito!</strong> El usuario habilitado se elimino correctamente.
+        </div>";
+      $_SESSION["usuario"]=0;
+  }
+?>
+
+  <div class="container-fluid table-responsive" style="background-color: #fff; padding: 100px; width: 70%;">
     
     <table width="100%" border="0">
       <?php 
@@ -44,22 +61,56 @@ include '../../elementos/admin/nav2.php';
               </thead>";
 
       foreach ($ha as $x) {
+        
         echo "
         <tr>
           <td>".$x["documento"]."</td>
           <td>
-            <form action='' method='post'>
-          <button class='btn fa fa-times-circle'></button>
-        </form>
+            <a data-toggle='modal' data-target='#$x[documento]'>
+              <button class='btn fa fa-times-circle'></button>
+            </a>
           </td>
 
-        </tr>";
-      }
+        </tr>
 
+        <div class='modal fade' id='$x[documento]' role='dialog'>
+          <div class='modal-dialog'>
+            <!--Confirma la contraseña para borrar lo que desea-->
+              <div class='modal-content'>
+                <div class='modal-header'>
+                  <button type='button' class='close' data-dismiss='modal'>×</button>
+                  <h4><span class='glyphicon glyphicon-ok'></span> Confirmar</h4>
+                </div>
+                <div class='modal-body'>
+                  <form action='../../negocio/eliminar/habilitados.php' method='post'>
+
+                    <div class='form-group'>
+                      <p align='center'>Desea eliminar el usuario que esta habilitado para el registro del sistema.</p>
+                      <p align='center'>Para poder continuar por favor digite su contraseña.</p>
+                    </div>
+                    <div class='form-group'>
+                      <label for='usrname'><span class='glyphicon glyphicon-lock'></span> Contraseña:</label>
+                      <input type='password' name='contrasena' class='form-control' placeholder='Contraseña' required>
+                      <input type='checkbox' value='1' required> Estoy seguro.
+                    </div>
+                      <input type=hidden name=doc value=".$x["documento"].">
+                      <button type='submit' class='btn btn-block'>Continuar</button>
+                  </form>
+                </div>
+                <div class='modal-footer'>
+                  <button type='submit' class='btn btn-default pull-center' data-dismiss='modal'>
+                    <span class='glyphicon glyphicon-remove'></span> Cancelar
+                  </button>
+                </div>
+              </div>
+          </div>
+        </div>
+        ";
+      }
       ?>
       </table> 
       <table width="100%">
-        <tr>
+        <tr> 
           <form action="habilitar.php">
           <td colspan="8"><br><button class="btn form-control">Volver</button></td>
           </form>
@@ -69,6 +120,9 @@ include '../../elementos/admin/nav2.php';
   </div>
 
 
+
+
+<div style="padding: 3%;"></div>
 <br><br><br>
 <!-- Footer -->
 <?php include '../../elementos/footer.php'; ?>

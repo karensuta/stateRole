@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,14 +32,23 @@ if ($_SESSION["actualizar"]==1) {
         </div>";
   $_SESSION["actualizar"]=0;
 }
+
+//revisa en la copnsulta de datos si el usuario se encuentra registrado
+if ($_SESSION["usuario"]==2) {
+  echo"<div class='alert alert-danger text-center'>
+        <strong>Aviso!</strong> Este usuario no se encuentra registrado.
+      </div>";
+  $_SESSION["usuario"]=0;
+}
+
 ?>
 
 <!-- Container (DESERCION) -->
 <div id="desercion" class="container">
   <h1 class="col-md-12 col-12">DESERCIÓN</h1>
   <div class="col-md-12 col-12">
-    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/"><span class="badge badge-primary">Sofia Plus</span></a>
-    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/"><span class="badge badge-success">Sena CEET</span></a>
+    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank"><span class="badge badge-primary">Sofia Plus</span></a>
+    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/" target="_blank"><span class="badge badge-success">Sena CEET</span></a>
   </div>
   <div class="col-md-2 col-2">
     <br><br><br>
@@ -65,8 +74,8 @@ if ($_SESSION["actualizar"]==1) {
     <div class="row mb-12">
     <h1 class="col-md-12 col-12">TRASLADO</h1>
     <div class="col-md-12 col-12">
-    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/"><span class="badge badge-primary">Sofia Plus</span></a>
-    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/"><span class="badge badge-success">Sena CEET</span></a>
+    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank"><span class="badge badge-primary">Sofia Plus</span></a>
+    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/" target="_blank"><span class="badge badge-success">Sena CEET</span></a>
   </div>
     <div class="col-md-2 col-2">
       <br>
@@ -87,8 +96,8 @@ if ($_SESSION["actualizar"]==1) {
 <div id="aplazamiento" class="container">
   <h1 class="col-md-12 col-12">APLAZAMIENTO</h1>
   <div class="col-md-12 col-12">
-    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/"><span class="badge badge-primary">Sofia Plus</span></a>
-    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/"><span class="badge badge-success">Sena CEET</span></a>
+    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank"><span class="badge badge-primary">Sofia Plus</span></a>
+    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/" target="_blank"><span class="badge badge-success">Sena CEET</span></a>
   </div>
   <div class="col-md-2 col-2">
     <br><br><br>
@@ -110,8 +119,8 @@ if ($_SESSION["actualizar"]==1) {
   <div class="container">
     <h1 class="col-md-12 col-12">REINGRESO</h1>
     <div class="col-md-12 col-12">
-    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/"><span class="badge badge-primary">Sofia Plus</span></a>
-    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/"><span class="badge badge-success">Sena CEET</span></a>
+    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank"><span class="badge badge-primary">Sofia Plus</span></a>
+    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/" target="_blank"><span class="badge badge-success">Sena CEET</span></a>
   </div>
     <div class="col-md-2 col-2">
       <br><br><br>
@@ -131,8 +140,8 @@ if ($_SESSION["actualizar"]==1) {
 <div id="retiro" class="container">
   <h1 class="col-md-12 col-12">RETIRO VOLUNTARIO</h1>
   <div class="col-md-12 col-12">
-    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/"><span class="badge badge-primary">Sofia Plus</span></a>
-    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/"><span class="badge badge-success">Sena CEET</span></a>
+    <a href="http://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank"><span class="badge badge-primary">Sofia Plus</span></a>
+    <a href="http://electricidadelectronicaytelecomu.blogspot.com.co/" target="_blank"><span class="badge badge-success">Sena CEET</span></a>
   </div>
   <div class="col-md-2 col-2">
     <br><br>

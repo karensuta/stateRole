@@ -1,3 +1,4 @@
+<?php include '../../seguridad/seguridadIns.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +21,9 @@ include '../../elementos/instructor/nav2.php';
 ?>  
   
 
-<div class="cuadro" style="padding: 150px;">
+<div class="cuadro" style="padding: 130px;">
  
-  <div class="container" style="background-color: #fff">
+  <div class="container table-responsive" style="background-color: #fff">
       
       <h1>Seleccione la opción deseada:</h1>
       <form action="registroDesercion.php" method="post" class="form-horizontal">

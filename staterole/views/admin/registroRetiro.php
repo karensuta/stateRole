@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +32,15 @@ if ($_SESSION["aprendiz"]==1) {
         </div>";
   $_SESSION["aprendiz"]=0;
 }
-//actualizacion datos de usuarios
+//confirma si tiene ya una novedad
+if ($_SESSION["novedad"]==1) {
+  echo "<div class='alert alert-danger alert-dismissible text-center'>
+          <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+          <strong>Aviso!</strong> Esta aprendiz ya presenta una novedad.
+        </div>";
+  $_SESSION["novedad"]=0;
+}
+//confirma se que se realizo bien la novedad
 if ($_SESSION["novedad"]==2) {
   echo "<div class='alert alert-success alert-dismissible text-center'>
           <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
@@ -44,7 +52,7 @@ if ($_SESSION["novedad"]==2) {
 
 <div class="cuadro" style="padding: 80px;">
  
-  <div class="container" style="background-color: #fff">
+  <div class="container table-responsive" style="background-color: #fff">
       
       <h1>Registar Retiro Voluntario</h1>
       

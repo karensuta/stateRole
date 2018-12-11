@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,14 +16,13 @@
     </div>
   </header>
 <br><br><br><br>
-<div class="cuadro">
+<div class="cuadro table-responsive">
 
   <?php
-  session_start();
   require_once '../../controller/adminController.php';
-
+  $novedad=3;
   $apre = new Administrador();
-  $res = $apre->aprendiz($_POST["documento"]);
+  $res = $apre->aprendiz($_POST["documento"],$novedad);
 
   foreach ($res as $x) {
     echo "

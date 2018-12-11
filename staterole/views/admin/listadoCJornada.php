@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +26,7 @@ include '../../elementos/admin/nav2.php';
   <div class="container"><h1 style="color: #fff;">Lista de Cambios de Jornada</h1></div>
 </header>
 <?php 
-//actualizacion de la desercion
+//afirma la actualizacion de la desercion
 if ($_SESSION["actualizar"]==1) {
   echo "<div class='alert alert-success alert-dismissible text-center'>
           <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
@@ -34,6 +34,7 @@ if ($_SESSION["actualizar"]==1) {
         </div>";
   $_SESSION["actualizar"]=0;
 }
+//afirma que se haya eliminado la novedad
 if ($_SESSION["eliminar"]==1) {
   echo "<div class='alert alert-danger alert-dismissible text-center'>
           <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
@@ -41,8 +42,16 @@ if ($_SESSION["eliminar"]==1) {
         </div>";
   $_SESSION["eliminar"]=0;
 }
+//la contraseña no coinside
+if ($_SESSION["usuario"]==1) {
+  echo "<div class='alert alert-danger alert-dismissible text-center'>
+          <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+          <strong>Aviso!</strong> La contraseña no coincide.
+        </div>";
+  $_SESSION["usuario"]=0;
+}
 ?>
-  <div class="container-fluid" style="background-color: #fff; padding: 150px; ">
+  <div class="container-fluid table-responsive" style="background-color: #fff; padding: 150px; ">
     
     <table width="100%" border="0">
       <?php 
@@ -63,8 +72,7 @@ if ($_SESSION["eliminar"]==1) {
                 <th>Correo</th>
                 <th>Fecha</th>
                 <th>Observación</th>
-                <th>Actualizar</th>
-                <th>Eliminar</th>
+                <th>Estado</th>
               </thead>";
 
       foreach ($res as $x) {
@@ -79,21 +87,18 @@ if ($_SESSION["eliminar"]==1) {
           <td>".$x["correo"]."</td>
           <td>".$x["fecha"]."</td>
           <td>".$x["observacion"]."</td>
-          <td>
-            <form action='actualizarCJornada.php' method='post'>
-              <input type='hidden' name='id_usuario' value=".$x['id_usuario'].">
-              <input type='hidden' name='documento' value=".$x['documento'].">
-              <input type='hidden' name='id_tipo_novedad' value='6'>
-              <button class='btn fa fa-edit'></button>
-            </form>
-          </td>
-          <td>
-            <form action='../../negocio/eliminar/cJornada.php' method='post'>
-              <input type='hidden' name='id_usuario' value=".$x['id_usuario'].">
-              <input type='hidden' name='id_tipo_novedad' value='6'>
-              <button class='btn fa fa-times-circle'></button>
-            </form>
-          </td>
+          <td>";
+          if ($x["estado_novedad"]==1) {
+            echo "<p style='color:#0080ff;'>En proceso...</p>";
+          }
+          if ($x["estado_novedad"]==2) {
+            echo "<p style='color:#009900;'>Aprovado</p>";
+          }
+          if ($x["estado_novedad"]==3) {
+            echo "<p style='color:#ff0000;'>Rechazado</p>";
+          }
+            
+          echo "</td>
 
         </tr>";
       }

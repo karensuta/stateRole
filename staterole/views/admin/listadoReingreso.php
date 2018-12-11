@@ -1,4 +1,4 @@
-<?php include '../../seguridad/seguridad.php'; ?>
+<?php include '../../seguridad/seguridadAdmin.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,7 +42,7 @@ if ($_SESSION["eliminar"]==1) {
   $_SESSION["eliminar"]=0;
 }
 ?>
-  <div class="container-fluid" style="background-color: #fff; padding: 150px; ">
+  <div class="container-fluid table-responsive" style="background-color: #fff; padding: 150px; ">
     
     <table width="100%" border="0">
       <?php 
@@ -63,8 +63,7 @@ if ($_SESSION["eliminar"]==1) {
                 <th>Correo</th>
                 <th>Fecha</th>
                 <th>Observación</th>
-                <th>Actualizar</th>
-                <th>Eliminar</th>
+                <th>Estado</th>
               </thead>";
 
       foreach ($res as $x) {
@@ -79,21 +78,17 @@ if ($_SESSION["eliminar"]==1) {
           <td>".$x["correo"]."</td>
           <td>".$x["fecha"]."</td>
           <td>".$x["observacion"]."</td>
-          <td>
-            <form action='actualizarReingreso.php' method='post'>
-              <input type='hidden' name='id_usuario' value=".$x['id_usuario'].">
-              <input type='hidden' name='documento' value=".$x['documento'].">
-              <input type='hidden' name='id_tipo_novedad' value='3'>
-              <button class='btn fa fa-edit'></button>
-            </form>
-          </td>
-          <td>
-            <form action='../../negocio/eliminar/reingreso.php' method='post'>
-              <input type='hidden' name='id_usuario' value=".$x['id_usuario'].">
-              <input type='hidden' name='id_tipo_novedad' value='3'>
-              <button class='btn fa fa-times-circle'></button>
-            </form>
-          </td>
+          <td>";
+          if ($x["estado_novedad"]==1) {
+            echo "<p style='color:#0080ff;'>En proceso...</p>";
+          }
+          if ($x["estado_novedad"]==2) {
+            echo "<p style='color:#009900;'>Aprovado</p>";
+          }
+          if ($x["estado_novedad"]==3) {
+            echo "<p style='color:#ff0000;'>Rechazado</p>";
+          }
+          echo "</td>
 
         </tr>";
       }
